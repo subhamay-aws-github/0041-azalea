@@ -1,0 +1,13 @@
+{
+    "bucket-name": "azalea-test-bucket-12345678-1",
+    "object-names": [
+        "test-1234567.txt",
+        "test-12345678.txt",
+        "test-123456789.txt",
+        "test-0987665.txt",
+        "1.txt",
+        "2.txt",
+        "3.txt",
+        "4.txt"
+    ]
+}

@@ -1,0 +1,31 @@
+org: subhamayaws
+app: aws-node-project
+service: azalea-nodejs-lambda-sample-13
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  profile: serverless-admin
+  stage: dev
+  timeout: 10
+  memorySize: 128
+  environment:
+    REGION_NAME: ${self:provider.region}
+
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Resource: '*'
+          Action: 's3:*'
+
+functions:
+  duplicateAnObjectInS3Bucket:
+    name: azalea-list-s3-buckets-${self:provider.stage}-${self:provider.region}
+    description: To duplicate an object in a S3 bucket using AWS-SDK
+    handler: handler.duplicateAnObjectInS3Bucket
+
+

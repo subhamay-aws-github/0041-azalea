@@ -1,0 +1,5 @@
+{
+    "bucket-name": "azalea-test-bucket-12345678-1",
+    "object-name": "test-1234567.txt",
+    "object-body": "This is a sample text"
+}

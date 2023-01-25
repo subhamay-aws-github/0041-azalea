@@ -1,0 +1,19 @@
+service: azalea-nodejs-lambda-sample-19-layer
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  profile: serverless-admin
+  stage: dev
+
+layers:
+  lambdalayer: 
+    path: media-lib
+    name: azalea-thumbnail-layer
+    description: "Dependencies for thumbnail generation & extracting mediadata" 
+    compatibleRuntimes:
+      - nodejs14.x 
+    retain: false  # Set true if you want the previous version also to co-exist`

@@ -1,0 +1,72 @@
+org: subhamayaws
+app: aws-node-project
+service: azalea-nodejs-lambda-sample-16
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  profile: serverless-admin
+  stage: dev
+  timeout: 10
+  memorySize: 128
+  environment:
+    REGION_NAME: ${self:provider.region}
+    REPLY_TABLE: Reply
+
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Resource: '*'
+          Action: 'dynamodb:*'
+
+functions:
+  putDynamoDBItem:
+    name: azalea-put-dynamodb-item-${self:provider.stage}-${self:provider.region}
+    description: To put an item from a DynamoDB table using AWS-SDK
+    handler: handler.putDynamoDBItem
+
+resources: # CloudFormation template syntax from here on.
+  Resources:
+    ReplyTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Reply
+        AttributeDefinitions:
+          - AttributeName: Id
+            AttributeType: S
+          - AttributeName: ReplyDateTime
+            AttributeType: S
+          - AttributeName: PostedBy
+            AttributeType: S
+          - AttributeName: Message
+            AttributeType: S
+        KeySchema:
+          - AttributeName: Id
+            KeyType: HASH
+          - AttributeName: ReplyDateTime
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: PostedBy-Message-Index
+            KeySchema:
+              - AttributeName: PostedBy
+                KeyType: HASH
+              - AttributeName: Message
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+  Outputs:
+    DynamoDBTableArn: 
+      Description: The Arn of the DynamoDB Table
+      Value: !GetAtt ReplyTable.Arn
+
+

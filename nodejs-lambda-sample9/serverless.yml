@@ -1,0 +1,31 @@
+org: subhamayaws
+app: aws-node-project
+service: azalea-nodejs-lambda-sample-9
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  profile: serverless-admin
+  stage: dev
+  timeout: 10
+  memorySize: 128
+  environment:
+    REGION_NAME: ${self:provider.region}
+
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Resource: '*'
+          Action: 's3:*'
+
+functions:
+  deletingObjectsFromS3Bucket:
+    name: azalea-delete-s3-objects-${self:provider.stage}-${self:provider.region}
+    description: To delete an object from a S3 bucket using AWS-SDK
+    handler: handler.deletingObjectsFromS3Bucket
+
+

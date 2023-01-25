@@ -1,0 +1,65 @@
+org: subhamayaws
+app: aws-node-project
+service: nodejs-lambda-sample19
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  profile: serverless-admin
+  stage: dev
+  timeout: 900
+  memorySize: 256
+  environment:
+    REGION_NAME: ${self:provider.region}
+    DESTINATION_S3_BUCKET: ${self:custom.thumbnailsBucket}
+
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Resource: '*'
+          Action: 's3:*'
+
+custom:
+  imagesBucket: azalea-original-images-${self:provider.stage}-${self:provider.region}
+  thumbnailsBucket: azalea-thumbnail-images-${self:provider.stage}-${self:provider.region}
+
+functions:
+  resizeImage:
+    name: azalea-generate-thumbnail-${self:provider.stage}-${self:provider.region}
+    description: To generate a thumnail of an uploaded image using AWS-SDK
+    handler: handler.resizeImage
+    layers:
+        - arn:aws:lambda:us-east-1:807724355529:layer:azalea-thumbnail-layer:1 # Put Your layer ARN here
+    events:
+      - s3:
+          bucket: ${self:custom.imagesBucket}
+          event: s3:ObjectCreated:*
+          rules:
+            - suffix: .png
+
+# you can add CloudFormation resource templates here
+resources:
+  Resources:
+    ThumbnailsS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.thumbnailsBucket}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+        Tags:
+          - Key: ProjectName
+            Value: Azalea
+
+  Outputs:
+    S3ThumbnailsBucketArn:
+      Description: The Arn of the generated thumbnails bucket.
+      Value: !GetAtt ThumbnailsS3Bucket.Arn
+
+

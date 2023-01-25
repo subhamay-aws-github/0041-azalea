@@ -1,0 +1,29 @@
+org: subhamayaws
+app: aws-node-project
+service: azalea-nodejs-lambda-sample-1
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  profile: serverless-admin
+  stage: dev
+  timeout: 10
+  memorySize: 128
+  environment:
+    REGION_NAME: ${self:provider.region}
+
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Resource: '*'
+          Action: 's3:*'
+
+functions:
+  createS3Bucket: #### Done
+    name: azalea-create-s3-bucket-${self:provider.stage}-${self:provider.region}
+    description: To create a S3 bucket using AWS-SDK
+    handler: handler.createS3Bucket

@@ -1,0 +1,19 @@
+{
+    "Records": [
+        {
+            "s3": {
+                "bucket": "azalea-test-bucket-12345678-1"
+            }
+        },
+        {
+            "s3": {
+                "bucket": "azalea-test-bucket-12345678-2"
+            }
+        },
+        {
+            "s3": {
+                "bucket": "azalea-test-bucket-12345678-3"
+            }
+        }
+    ]
+}
